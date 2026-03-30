@@ -22,7 +22,6 @@ def generate_anchors(feature_size, image_size, scales, aspect_ratios):
                     h = scales[a]/(math.sqrt(aspect_ratios[b]))
                     anchor_box =[cx - w/2, cy - h/2, cx + w/2, cy + h/2]
                     anchors.append(anchor_box)
-        
 
     return anchors
                 
