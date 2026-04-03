@@ -20,7 +20,7 @@ def matrix_normalization(matrix, axis=None, norm_type='l2'):
         return None
 
     # Validate norm_type — reject anything not explicitly supported
-    valid_norm_types = ('l1', 'l2', 'linf', 'max')
+    valid_norm_types = ('l1', 'l2', 'max')
     if norm_type not in valid_norm_types:
         return None
 
