@@ -30,17 +30,14 @@ def multi_head_attention(Q: np.ndarray, K: np.ndarray, V: np.ndarray,
     value = np.matmul(V, W_v)
 
     head_dim = query.shape[-1] // num_heads
-    query = query.reshape(query.shape[0], query.shape[1], num_heads, head_dim).transpose(0, 2, 1, 3)
-    key = key.reshape(key.shape[0], key.shape[1], num_heads, head_dim).transpose(0, 2, 1, 3)
-    value = value.reshape(value.shape[0], value.shape[1], num_heads, head_dim).transpose(0, 2, 1, 3)
 
-    scores = np.matmul(query, key.transpose(0, 1, 3, 2)) / math.sqrt(head_dim)
-    attention_weights = softmax(scores, axis=-1)
-    attention_output = np.matmul(attention_weights, value).transpose(0, 2, 1, 3).reshape(Q.shape[0], Q.shape[1], -1)
-    output = np.matmul(attention_output, W_o)
+    query = query.reshape(query.shape[0], query.shape[1], num_heads, head_dim).transpose(0, 2, 1, 3) ## shape (1,3,4) --> (1,3,2,2) ---> transpose --> (1,2,3,2) (across each head dimenstion split the vector across 2 heads)
+    key = key.reshape(key.shape[0], key.shape[1], num_heads, head_dim).transpose(0, 2, 1, 3)  ## 
+    value = value.reshape(value.shape[0], value.shape[1], num_heads, head_dim).transpose(0, 2, 1, 3) ##(1,2,3,2)
+
+    scores = np.matmul(query, key.transpose(0, 1, 3, 2)) / math.sqrt(head_dim) ## (1,2,3,2) --> (1,2,2,3)
+    attention_weights = softmax(scores, axis=-1) ## (1,2,3,3)
+    attention_output = np.matmul(attention_weights, value).transpose(0, 2, 1, 3).reshape(Q.shape[0], Q.shape[1], -1) ## (1,2,3,3) values (1,2,3,2) --->(1,2,3,2) --> (1,3,2,2)-->(1,3,4)
+    output = np.matmul(attention_output, W_o) ##(1,3,4) --> (4,4) -->(1,3,4)
+
     return output
-
-
-    
-
-    
