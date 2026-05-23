@@ -4,35 +4,41 @@ def batch_generator(X, y, batch_size, rng=None, drop_last=False):
     """
     Randomly shuffle a dataset and yield mini-batches (X_batch, y_batch).
     """
-    X = np.array(X)
+    # Write code here
+
+    X= np.array(X)
     y = np.array(y)
 
-    n = len(X)
-    assert n == len(y)
+    arr_len = len(X)
 
-    # 1. make indices for all samples
-    indices = np.arange(n)
+    num_batches = arr_len//batch_size
 
-    # 2. shuffle indices
-    if rng is not None:
-        rng.shuffle(indices)
+    residual = arr_len - num_batches*batch_size
+
+  
+    
+    indices = np.arange(len(X))
+
+   
+
+    ## shuffle indices
+
+    if rng is None:
+          np.random.shuffle(indices)
+  
     else:
-        np.random.shuffle(indices)
-
-    # 3. apply permutation
+          rng.shuffle(indices)
+  
+#     print(indices)
     X = X[indices]
     y = y[indices]
 
-    # 4. if drop_last, cut off only after shuffling
     if drop_last:
-        n_full = (n // batch_size) * batch_size
-        X = X[:n_full]
-        y = y[:n_full]
-        n = n_full
+        X= X[:arr_len-residual]
+        y =y[:arr_len-residual]
+#     print(f"x:{X},y:{y}")
+    for i in range(0, len(X),batch_size):
+          batch_x = X[i:i+batch_size]
+          batch_y = y[i:i+batch_size]
 
-    # 5. iterate over batches
-    for start in range(0, n, batch_size):
-        end = start + batch_size
-        batch_x = X[start:end]
-        batch_y = y[start:end]
-        yield batch_x, batch_y
+          yield batch_x,batch_y
